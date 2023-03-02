@@ -1,11 +1,14 @@
 // Data Access Object - Productos
 import mongoose from "mongoose";
 import ProductoModel from "../models/ProductoModel.js";
+import dotenv from "dotenv";
+dotenv.config();
+
+const mongoURL = process.env.MONGODB;
 
 export default class ContenedorProductosDao {
   constructor() {
-    this.url =
-      "mongodb+srv://coderBackend:coderBackendPW@clustercoderbackend.tct9by1.mongodb.net/ProyectoFinal?retryWrites=true&w=majority";
+    this.url = mongoURL;
     this.mongodb = mongoose.connect;
   }
 

@@ -1,9 +1,7 @@
 // PRODUCTOS CONTROLLER
-
 import ContenedorProductosDao from "../persistence/DAOs/Producto.dao.js";
 const contenedorProductosDao = new ContenedorProductosDao();
 
-// Listar todos los productos cargados
 export async function leerProductos(req, res) {
   const listaProductos = await contenedorProductosDao.leerProductos();
   let response;
@@ -15,7 +13,6 @@ export async function leerProductos(req, res) {
   res.json(response);
 }
 
-// Listar producto por ID
 export async function listarPorId(req, res) {
   const productoBuscado = await contenedorProductosDao.listarPorId(
     req.params.id
@@ -30,7 +27,6 @@ export async function listarPorId(req, res) {
   res.json(response);
 }
 
-// Listar producto por categoria // RESPETAR MAYUSCULAS Y MINUSCULAS EN BARRA DE NAVEGADOR
 export async function listarPorCategoria(req, res) {
   const categBuscada = await contenedorProductosDao.listarPorCategoria(
     req.params.categoria
@@ -44,9 +40,8 @@ export async function listarPorCategoria(req, res) {
   res.json(response);
 }
 
-// Cargar producto a la lista con permisos Admin
+// Producto ejemplo para Postman
 /*
-Producto ejemplo para Postman
 {
     "Nombre": "Jugo",
     "Categoria": "Liquido",
