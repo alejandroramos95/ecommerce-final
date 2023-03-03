@@ -2,8 +2,7 @@
 import express from "express";
 import ContenedorUsuarioDao from "../persistence/DAOs/User.dao.js";
 const contenedorUsuarioDao = new ContenedorUsuarioDao();
-import passport from "./middlewares/passport.js";
-import path from "path";
+import { createHash } from "../services/userService.js";
 
 export function renderLogin(req, res) {
   res.render("login");
@@ -21,10 +20,22 @@ export async function registerError(req, res) {
   res.render("register-error");
 }
 
+export function jsonWebTokenAuth(req, res) {
+  const payload = {
+    name: req.body.emailUser,
+    rol: "administridor",
+    iat: Math.floor(Date.now() / 1000),
+    exp: Math.floor(Date.now() / 1000) + 60 * 60,
+  };
+  const token = jwt.sign(payload, process.env.JWT_SIGN);
+  res.json({ token });
+}
+
 export async function userRegister(req, res) {
+  console.log("register REQ", req);
   const registerData = {
     email: req.body.registerEmail,
-    password: req.body.registerPassword,
+    password: createHash(req.body.registerPassword),
     nombre: req.body.registerNombre,
     direccion: req.body.registerDireccion,
     edad: req.body.registerEdad,

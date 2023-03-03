@@ -10,11 +10,11 @@ const contenedorUsuarioDao = new ContenedorUsuarioDao();
 
 const LocalStrategy = Strategy;
 
-/* const JwtStrategy = passportJwt.Strategy;
+const JwtStrategy = passportJwt.Strategy;
 const ExtractJwt = passportJwt.ExtractJwt;
-const JWTKEY = process.env.JWTKEY; */
+const JWTKEY = process.env.JWTKEY;
 
-/* const jwtOptions = {
+const jwtOptions = {
   secretOrKey: JWTKEY,
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
 };
@@ -34,7 +34,7 @@ passport.use(
       return done(e, false);
     }
   })
-); */
+);
 
 // LOGIN STRATEGY
 passport.use(

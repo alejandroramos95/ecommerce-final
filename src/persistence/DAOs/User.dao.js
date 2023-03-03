@@ -26,7 +26,6 @@ export default class ContenedorUsuarioDao {
     await this.conectarDB();
     const userExist = await UserModel.findOne({ email: usuario.email });
     if (userExist) return false;
-    usuario.password = createHash(usuario.password);
     const newUser = new UserModel(usuario);
     await newUser.save();
     return true;
