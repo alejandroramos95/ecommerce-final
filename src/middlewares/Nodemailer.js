@@ -43,15 +43,11 @@ export async function enviarEmailRegistro(newUser) {
 }
 
 export async function enviarEmailCompra(orden) {
-  console.log(orden.productos);
-  let count = 0;
-  const finalOrder = orden.productos.reduce((acum, obj) => {
-    return !acum[obj.Nombre]
-      ? { [obj.Nombre]: count++ }
-      : { [obj.Nombre]: acum[obj.Nombre] + count++ };
-  }, {});
-
-  console.log(finalOrder);
+  const prodCount = {};
+  orden.productos.forEach((element) => {
+    prodCount[element.Nombre] = (prodCount[element.Nombre] || 0) + 1;
+  });
+  console.log(prodCount);
 
   const transporter = createTransport({
     host: "smtp.ethereal.email",
@@ -72,7 +68,7 @@ export async function enviarEmailCompra(orden) {
     <p>
     <span style="color: green;">DETALLE DE COMPRA:</span>
     </p>
-    Orden de compra: ${orden._id}
+    Orden de compra:
     <p>
     Fecha y hora: ${orden.createdAt.toLocaleString()}
     </p>

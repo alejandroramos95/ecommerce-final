@@ -46,25 +46,9 @@ export default class ContenedorCarritosDao {
     try {
       await this.conectarDB();
       const prod = await this.producto.listarPorId(idProd);
-      const carrito = await this.obtenerCarritoPorId(idCarrito);
-      const prodExists = carrito.productos.find(
-        (obj) => obj._id.toHexString() === idProd
-      );
-
-      if (prodExists) {
-        Object.assign(prodExists, source1);
-        await CarritoModel.findByIdAndUpdate(idCarrito, {
-          $set: { productos: prodExists },
-        });
-        console.log("ya habia uno");
-      } else {
-        let prodCarr = prod;
-
-        await CarritoModel.findByIdAndUpdate(idCarrito, {
-          $push: { productos: prodCarr },
-        });
-        console.log("no habia ninguno");
-      }
+      await CarritoModel.findByIdAndUpdate(idCarrito, {
+        $push: { productos: prod },
+      });
     } catch (e) {
       console.log(e);
     }
