@@ -40,4 +40,10 @@ export default class ContenedorUsuarioDao {
     });
     return true;
   }
+
+  async getUserInfoForPublic(email) {
+    await this.conectarDB();
+    const usuario = await UserModel.findOne({ email }, { password: false });
+    return usuario;
+  }
 }

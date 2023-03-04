@@ -4,6 +4,7 @@ const productoSchema = new mongoose.Schema(
   {
     Nombre: String,
     Categoria: String,
+    Descripcion: String,
     Codigo: Number,
     LinkFoto: String,
     Precio: Number,

@@ -1,10 +1,20 @@
 // CARRITOS CONTROLLER
 import ContenedorCarritosDao from "../persistence/DAOs/Carrito.dao.js";
+import ContenedorUsuarioDao from "../persistence/DAOs/User.dao.js";
+import ContenedorOrdenesDao from "../persistence/DAOs/Ordenes.dao.js";
+import { errorFound } from "../middlewares/LoggerPino.js";
+import { enviarEmailCompra } from "../middlewares/Nodemailer.js";
 const contenedorCarritosDao = new ContenedorCarritosDao();
+const contenedorUsuarioDao = new ContenedorUsuarioDao();
+const contenedorOrdenesDao = new ContenedorOrdenesDao();
 
 // Crear carrito
 export async function crearCarrito(req, res) {
   const carritoCreado = await contenedorCarritosDao.crearCarrito();
+  await contenedorUsuarioDao.actualizarUsuario(
+    req.cookies.userLoggedEmail,
+    carritoCreado
+  );
   res.json(carritoCreado);
 }
 
@@ -28,8 +38,10 @@ export async function obtenerCarritoPorId(req, res) {
   let response;
   if (!carrito) {
     response = { error: "No existe el carrito." };
+    errorFound(response);
   } else if (!carrito.productos.length) {
     response = { error: "Este carrito no tiene productos." };
+    errorFound(response);
   } else {
     response = carrito;
   }
@@ -38,7 +50,7 @@ export async function obtenerCarritoPorId(req, res) {
 
 // Ingresar productos por ID al carrito por su ID
 export async function guardarProductoEnCarrito(req, res) {
-  const response = await contenedorCarritosDao.guardarProductoEnCarrito(
+  await contenedorCarritosDao.guardarProductoEnCarrito(
     req.params.id,
     req.params.idProd
   );
@@ -67,16 +79,21 @@ export async function eliminarCarritoPorId(req, res) {
   const response = await contenedorCarritosDao.eliminarCarritoPorId(
     req.params.id
   );
-  console.log(response);
   res.json(`Carrito ID: ${req.params.id} eliminado correctamente.`);
 }
 
-// COMPRA CARRITO -- revisar nodemailer cuando se implemente
-/* export async function enviarEmailCompra(req, res) {
-  const user = await sessionService.buscarUsuarioPorEmail(
-    req.cookies.userEmail
+// Compra orden carrito
+export async function comprarOrdenCarrito(req, res) {
+  const user = await contenedorUsuarioDao.buscarUsuarioPorEmail(
+    req.cookies.userLoggedEmail
   );
-  const carrito = await contenedorCarritos.obtenerCarrito(user.carrito);
-  enviarEmailCompra(user.email, carrito);
-  res.render("compra", { user });
-} */
+  const carrito = await contenedorCarritosDao.obtenerCarritoPorId(user.carrito);
+  const orden = {
+    productos: carrito.productos,
+    estado: "Generada",
+    email: user.email,
+  };
+  const ordenGenerada = await contenedorOrdenesDao.generarOrden(orden);
+  enviarEmailCompra(ordenGenerada);
+  res.render("compra", { user, ordenGenerada });
+}

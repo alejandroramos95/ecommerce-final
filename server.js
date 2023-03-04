@@ -1,14 +1,19 @@
 import express from "express";
 import cookieParser from "cookie-parser";
 import { createOnMongoStore } from "./src/services/userService.js";
-import passport from "./src/controllers/middlewares/Passport.js";
+import passport from "./src/middlewares/Passport.js";
 
 import routerCarrito from "./src/routes/carritos.router.js";
 import routerProductos from "./src/routes/productos.router.js";
 import routerUser from "./src/routes/user.router.js";
+import routerServerInfo from "./src/routes/serverInfo.router.js";
+
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 const __dirname = dirname(fileURLToPath(import.meta.url));
+
+import dotenv from "dotenv";
+dotenv.config();
 
 const app = express();
 
@@ -27,6 +32,7 @@ app.use(passport.session());
 app.use("/", routerProductos);
 app.use("/", routerCarrito);
 app.use("/", routerUser);
+app.use("/", routerServerInfo);
 
 app.all("*", (req, res) => {
   res.status(404).send({
@@ -35,7 +41,7 @@ app.all("*", (req, res) => {
   });
 });
 
-const PORT = 8080;
+const PORT = process.env.SERVER_PORT;
 
 const server = app.listen(PORT, () => {
   console.log(`Servidor http escuchando en el puerto ${server.address().port}`);

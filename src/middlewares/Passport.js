@@ -1,11 +1,11 @@
 import passport from "passport";
 import { Strategy } from "passport-local";
 import passportJwt from "passport-jwt";
-import { isValidPassword } from "../../services/userService.js";
+import { isValidPassword } from "../services/userService.js";
 import dotenv from "dotenv";
 dotenv.config();
 
-import ContenedorUsuarioDao from "../../persistence/DAOs/User.dao.js";
+import ContenedorUsuarioDao from "../persistence/DAOs/User.dao.js";
 const contenedorUsuarioDao = new ContenedorUsuarioDao();
 
 const LocalStrategy = Strategy;

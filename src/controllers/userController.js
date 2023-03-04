@@ -2,7 +2,9 @@
 import express from "express";
 import ContenedorUsuarioDao from "../persistence/DAOs/User.dao.js";
 const contenedorUsuarioDao = new ContenedorUsuarioDao();
+
 import { createHash } from "../services/userService.js";
+import { enviarEmailRegistro } from "../middlewares/Nodemailer.js";
 
 export function renderLogin(req, res) {
   res.render("login");
@@ -22,17 +24,22 @@ export async function registerError(req, res) {
 
 export function jsonWebTokenAuth(req, res) {
   const payload = {
-    name: req.body.emailUser,
-    rol: "administridor",
+    name: req.session.passport.user,
+    rol: "administrador",
     iat: Math.floor(Date.now() / 1000),
     exp: Math.floor(Date.now() / 1000) + 60 * 60,
   };
+  console.log(payload);
   const token = jwt.sign(payload, process.env.JWT_SIGN);
   res.json({ token });
 }
 
+export function setUserEmailCookieFromSession(req, res) {
+  res.cookie("userLoggedEmail", req.session.passport.user);
+  res.redirect("/productos");
+}
+
 export async function userRegister(req, res) {
-  console.log("register REQ", req);
   const registerData = {
     email: req.body.registerEmail,
     password: createHash(req.body.registerPassword),
@@ -45,6 +52,7 @@ export async function userRegister(req, res) {
   };
   const response = await contenedorUsuarioDao.registrarUsuario(registerData);
   if (response) {
+    enviarEmailRegistro(registerData);
     res.render("login");
   } else {
     res.render("register-error");
@@ -52,7 +60,8 @@ export async function userRegister(req, res) {
 }
 
 // ELIMINAR SESSION
-export function destrySession(req, res) {
+export function destroySession(req, res) {
+  res.clearCookie("userLoggedEmail");
   req.session.destroy((err) => {
     if (err) {
       return res.json({ status: "Logout ERROR", body: err });
@@ -62,13 +71,17 @@ export function destrySession(req, res) {
 }
 
 // GET PERFIL DATA
-export async function getUserData(req, res) {
-  const profileData = await sessionService.buscarUsuarioPorEmail(
-    req.cookies.userEmail
-  );
-  if (profileData) {
-    res.render("perfil", { profileData });
-  } else {
-    res.render("login");
+export async function getUserInfo(req, res) {
+  try {
+    if (req.session.passport) {
+      const userInfo = await contenedorUsuarioDao.getUserInfoForPublic(
+        req.session.passport.user
+      );
+      res.render("user-info", { userInfo });
+    } else {
+      res.render("login");
+    }
+  } catch (e) {
+    console.log("error perfil usuario: ", e);
   }
 }

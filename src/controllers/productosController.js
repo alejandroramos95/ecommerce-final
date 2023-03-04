@@ -1,5 +1,6 @@
 // PRODUCTOS CONTROLLER
 import ContenedorProductosDao from "../persistence/DAOs/Producto.dao.js";
+import { errorFound } from "../middlewares/LoggerPino.js";
 const contenedorProductosDao = new ContenedorProductosDao();
 
 export async function leerProductos(req, res) {
@@ -9,6 +10,7 @@ export async function leerProductos(req, res) {
     response = listaProductos;
   } else {
     response = { error: "No existen productos cargados." };
+    errorFound(response);
   }
   res.json(response);
 }
@@ -23,6 +25,7 @@ export async function listarPorId(req, res) {
     response = productoBuscado;
   } else {
     response = { error: "No existe el producto." };
+    errorFound(response);
   }
   res.json(response);
 }
@@ -36,6 +39,7 @@ export async function listarPorCategoria(req, res) {
     response = categBuscada;
   } else {
     response = { error: "No existe la categoria." };
+    errorFound(response);
   }
   res.json(response);
 }
