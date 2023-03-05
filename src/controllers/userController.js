@@ -6,6 +6,13 @@ const contenedorUsuarioDao = new ContenedorUsuarioDao();
 import { createHash } from "../services/userService.js";
 import { enviarEmailRegistro } from "../middlewares/Nodemailer.js";
 
+import jwt from "jsonwebtoken";
+
+import dotenv from "dotenv";
+dotenv.config();
+
+const JWTKEY = process.env.JWTKEY;
+
 export function renderLogin(req, res) {
   res.render("login");
 }
@@ -22,20 +29,16 @@ export async function registerError(req, res) {
   res.render("register-error");
 }
 
-export function jsonWebTokenAuth(req, res) {
+export function generateJWToken(req, res) {
   const payload = {
-    name: req.session.passport.user,
-    rol: "administrador",
+    email: req.body.emailUser,
     iat: Math.floor(Date.now() / 1000),
-    exp: Math.floor(Date.now() / 1000) + 60 * 60,
+    exp: Math.floor(Date.now() / 1000) + 30 * 30,
   };
-  console.log(payload);
-  const token = jwt.sign(payload, process.env.JWT_SIGN);
-  res.json({ token });
-}
-
-export function setUserEmailCookieFromSession(req, res) {
-  res.cookie("userLoggedEmail", req.session.passport.user);
+  const token = jwt.sign(payload, JWTKEY);
+  console.log(token);
+  res.cookie("userLoggedEmail", req.session.passport.user, { maxAge: 60000 });
+  res.cookie("userLoggedToken", token, { maxAge: 60000 });
   res.redirect("/productos");
 }
 
@@ -62,6 +65,7 @@ export async function userRegister(req, res) {
 // ELIMINAR SESSION
 export function destroySession(req, res) {
   res.clearCookie("userLoggedEmail");
+  res.clearCookie("userLoggedToken");
   req.session.destroy((err) => {
     if (err) {
       return res.json({ status: "Logout ERROR", body: err });

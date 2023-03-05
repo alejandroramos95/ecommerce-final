@@ -5,10 +5,9 @@ import {
   userRegister,
   loginError,
   registerError,
-  jsonWebTokenAuth,
+  generateJWToken,
   destroySession,
   getUserInfo,
-  setUserEmailCookieFromSession,
 } from "../controllers/userController.js";
 import passport from "../middlewares/Passport.js";
 import upload from "../middlewares/multer.js";
@@ -29,14 +28,17 @@ router.post(
     failureRedirect: "/login-error",
     passReqToCallback: true,
   }),
-  setUserEmailCookieFromSession,
-  jsonWebTokenAuth
+  generateJWToken
 );
 
 // LOG OUT
 router.get("/logout", destroySession);
 
 // USER INFO
-router.get("/user-info", getUserInfo);
+router.get(
+  "/user-info",
+  passport.authenticate("jwt", { session: false }),
+  getUserInfo
+);
 
 export default router;

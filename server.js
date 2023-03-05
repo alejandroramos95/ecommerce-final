@@ -1,6 +1,8 @@
 import express from "express";
-import cookieParser from "cookie-parser";
+import dotenv from "dotenv";
+dotenv.config();
 import { createOnMongoStore } from "./src/services/userService.js";
+import cookieParser from "cookie-parser";
 import passport from "./src/middlewares/Passport.js";
 
 import routerCarrito from "./src/routes/carritos.router.js";
@@ -12,10 +14,12 @@ import { dirname } from "path";
 import { fileURLToPath } from "url";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-import dotenv from "dotenv";
-dotenv.config();
+import { Server as HttpServer } from "http";
+import { Server as IOServer } from "socket.io";
 
 const app = express();
+const httpServer = new HttpServer(app);
+const io = new IOServer(httpServer);
 
 app.set("view engine", "ejs");
 app.set("views", __dirname + "/public/views");
@@ -43,7 +47,13 @@ app.all("*", (req, res) => {
 
 const PORT = process.env.SERVER_PORT;
 
-const server = app.listen(PORT, () => {
+io.on("connection", (socket) => {
+  console.log("se conecto un usuario");
+});
+
+app.set("socketio", io);
+
+const server = httpServer.listen(PORT, () => {
   console.log(`Servidor http escuchando en el puerto ${server.address().port}`);
 });
-server.on("error", (error) => console.log(`Error en servidor ${error}`));
+server.on("error", (error) => console.log(`Error in server ${error}`));

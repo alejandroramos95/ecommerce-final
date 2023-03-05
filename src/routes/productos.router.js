@@ -7,14 +7,39 @@ import {
   borrarProducto,
   actualizarProducto,
 } from "../controllers/productosController.js";
+import passport from "../middlewares/Passport.js";
 
 const router = Router();
 
-router.get("/productos", leerProductos);
-router.get("/productos/:categoria", listarPorCategoria);
-router.get("/productos/:id", listarPorId);
-router.post("/productos", guardoProductoEnDB);
-router.put("/productos/:id", actualizarProducto);
-router.delete("/productos/:id", borrarProducto);
+router.get(
+  "/productos",
+  passport.authenticate("jwt", { session: false }),
+  leerProductos
+);
+router.get(
+  "/productos/:categoria",
+  passport.authenticate("jwt", { session: false }),
+  listarPorCategoria
+);
+router.get(
+  "/productos/:id",
+  passport.authenticate("jwt", { session: false }),
+  listarPorId
+);
+router.post(
+  "/productos",
+  passport.authenticate("jwt", { session: false }),
+  guardoProductoEnDB
+);
+router.put(
+  "/productos/:id",
+  passport.authenticate("jwt", { session: false }),
+  actualizarProducto
+);
+router.delete(
+  "/productos/:id",
+  passport.authenticate("jwt", { session: false }),
+  borrarProducto
+);
 
 export default router;
