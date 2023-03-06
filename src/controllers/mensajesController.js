@@ -8,13 +8,8 @@ import moment from "moment";
 export function globalChat(req, res) {
   res.sendFile(__dirname + "/public/chat.html");
   const io = req.app.get("socketio");
-  io.on("connection", async (socket) => {
-    if (req.cookie?.userLoggedEmail === undefined) {
-      console.log(`Usuario no autorizado conectado`);
-    } else {
-      console.log(`Usuario ${req.cookie.userLoggedEmail} conectado`);
-    }
 
+  io.on("connection", async (socket) => {
     const messages = await contenedorMensajesDao.getAll();
 
     socket.emit("messages", messages);
@@ -27,7 +22,6 @@ export function globalChat(req, res) {
       io.sockets.emit("messages", await contenedorMensajesDao.getAll());
     });
   });
-  res.sendFile(__dirname + "/public/chat.html");
 }
 
 export function personalChat(req, res) {

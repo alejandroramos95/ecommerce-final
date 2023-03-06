@@ -48,6 +48,10 @@ app.all("*", (req, res) => {
   });
 });
 
+io.on("disconnect", () => {
+  console.log("Usuario desconectado mensajescontroller.");
+});
+
 const PORT = process.env.SERVER_PORT;
 
 const server = httpServer.listen(PORT, () => {
