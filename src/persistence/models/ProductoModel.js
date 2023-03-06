@@ -9,7 +9,6 @@ const productoSchema = new mongoose.Schema(
     LinkFoto: String,
     Precio: Number,
     Stock: Number,
-    Cantidad: { type: Number, require: false },
   },
   {
     timestamps: { createdAt: true, updatedAt: false },

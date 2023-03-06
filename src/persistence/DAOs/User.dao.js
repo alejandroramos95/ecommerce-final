@@ -34,7 +34,6 @@ export default class ContenedorUsuarioDao {
   async actualizarUsuario(email, idCar) {
     await this.conectarDB();
     const user = await this.buscarUsuarioPorEmail(email);
-    //console.log("desdedb", user, idCar);
     await UserModel.findByIdAndUpdate(user._id, {
       $set: { carrito: idCar },
     });

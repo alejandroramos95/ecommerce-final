@@ -11,6 +11,7 @@ const contenedorOrdenesDao = new ContenedorOrdenesDao();
 // Crear carrito
 export async function crearCarrito(req, res) {
   const carritoCreado = await contenedorCarritosDao.crearCarrito();
+  console.log(req.cookies.userLoggedEmail, carritoCreado);
   await contenedorUsuarioDao.actualizarUsuario(
     req.cookies.userLoggedEmail,
     carritoCreado

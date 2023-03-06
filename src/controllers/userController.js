@@ -33,11 +33,13 @@ export function generateJWToken(req, res) {
   const payload = {
     email: req.body.emailUser,
     iat: Math.floor(Date.now() / 1000),
-    exp: Math.floor(Date.now() / 1000) + 30 * 30,
+    exp: Math.floor(Date.now() / 1000) + 60 * 60,
   };
   const token = jwt.sign(payload, JWTKEY);
-  res.cookie("userLoggedEmail", req.session.passport.user, { maxAge: 60000 });
-  res.cookie("userLoggedToken", token, { maxAge: 60000 });
+  res.cookie("userLoggedEmail", req.session.passport.user, {
+    maxAge: 600000,
+  });
+  res.cookie("userLoggedToken", token, { maxAge: 600000 });
   res.redirect("/productos");
 }
 

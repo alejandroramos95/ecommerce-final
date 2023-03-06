@@ -29,20 +29,22 @@ router.get(
 );
 router.post(
   "/productos",
-  validarAdmin,
   passport.authenticate("jwt", { session: false }),
+  validarAdmin,
   guardoProductoEnDB
 );
 router.put(
   "/productos/:id",
-  validarAdmin,
+
   passport.authenticate("jwt", { session: false }),
+  validarAdmin,
   actualizarProducto
 );
 router.delete(
   "/productos/:id",
-  validarAdmin,
+
   passport.authenticate("jwt", { session: false }),
+  validarAdmin,
   borrarProducto
 );
 

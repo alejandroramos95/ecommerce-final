@@ -7,11 +7,9 @@ export default class ContenedorProductos {
     let file = [];
     try {
       const tempFile = await fs.promises.readFile("productos.txt", "utf-8");
-      
-      if (tempFile) file = JSON.parse(tempFile);
-    } catch (e) {
 
-    }
+      if (tempFile) file = JSON.parse(tempFile);
+    } catch (e) {}
     return file;
   }
 
@@ -45,7 +43,6 @@ export default class ContenedorProductos {
     const array = await this.leerProductos();
     prod.id = Number(id);
     let index = array.findIndex((prod) => prod.id === parseInt(id));
-    console.log("index :", index);
     if (index >= 0) {
       array.splice(index, 1, prod);
       await this.guardoProductoEnArchivo(array);

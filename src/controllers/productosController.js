@@ -19,7 +19,6 @@ export async function listarPorId(req, res) {
   const productoBuscado = await contenedorProductosDao.listarPorId(
     req.params.id
   );
-  console.log(productoBuscado);
   let response;
   if (productoBuscado) {
     response = productoBuscado;
