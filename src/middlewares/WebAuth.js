@@ -1,4 +1,4 @@
-export function validarAdmin(req, res, next) {
+export default function validarAdmin(req, res, next) {
   if (req.query.admin) {
     next();
   } else {

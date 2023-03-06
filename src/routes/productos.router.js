@@ -7,7 +7,7 @@ import {
   borrarProducto,
   actualizarProducto,
 } from "../controllers/productosController.js";
-import { validarAdmin } from "../middlewares/webAuth.js";
+import validarAdmin from "../middlewares/WebAuth.js";
 import passport from "../middlewares/Passport.js";
 
 const router = Router();
