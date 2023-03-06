@@ -57,32 +57,49 @@
   </head>
   <body>
     <ul id="messages"></ul>
-    <form id="form" action="">
-      <input id="input" autocomplete="off" /><button>Send</button>
-    </form>
+    <div>
+      <h1>Centro de mensajes</h1>
+      <form onsubmit="return addMessage(this)">
+        <input type="email" id="id" placeholder="Email *" />
+        <p></p>
+        <input type="text" id="primernombre" placeholder="Nombre" />
+        <p></p>
+        <div id="mensajes"></div>
+        <input type="text" id="text" placeholder="Mensaje" />
+        <input type="submit" value="Enviar" />
+      </form>
+    </div>
     <script src="/socket.io/socket.io.js"></script>
 
     <script>
-      var socket = io();
+      const socket = io.connect();
 
-      var messages = document.getElementById("messages");
-      var form = document.getElementById("form");
-      var input = document.getElementById("input");
-
-      form.addEventListener("submit", function (e) {
-        e.preventDefault();
-        if (input.value) {
-          socket.emit("chat message", input.value);
-          input.value = "";
-        }
+      socket.on("messages", (data) => {
+        renderChat(data);
       });
 
-      socket.on("chat message", function (msg) {
-        var item = document.createElement("li");
-        item.textContent = msg;
-        messages.appendChild(item);
-        window.scrollTo(0, document.body.scrollHeight);
-      });
+      function renderChat(data) {
+        const html = data
+          .map((elemento) => {
+            return `<div> <strong style='color:blue'>${elemento.author.id}</strong>
+<em style='color:brown'>${elemento.date}</em>: 
+        <em style='color:green; font-family: Italic'>${elemento.text}</em></div> `;
+          })
+          .join(" ");
+        document.getElementById("mensajes").innerHTML = html;
+      }
+
+      function addMessage(e) {
+        const mensaje = {
+          author: {
+            id: document.getElementById("id").value,
+            nombre: document.getElementById("primernombre").value,
+          },
+          text: document.getElementById("text").value,
+        };
+        socket.emit("new-message", mensaje);
+        return false;
+      }
     </script>
   </body>
 </html>

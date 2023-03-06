@@ -21,6 +21,8 @@ const app = express();
 const httpServer = new HttpServer(app);
 const io = new IOServer(httpServer);
 
+app.set("socketio", io);
+
 app.set("view engine", "ejs");
 app.set("views", __dirname + "/public/views");
 
@@ -47,12 +49,6 @@ app.all("*", (req, res) => {
 });
 
 const PORT = process.env.SERVER_PORT;
-
-io.on("connection", (socket) => {
-  socket.on("chat message", (msg) => {
-    io.emit("chat message", msg);
-  });
-});
 
 const server = httpServer.listen(PORT, () => {
   console.log(`Servidor http escuchando en el puerto ${server.address().port}`);
