@@ -48,7 +48,7 @@ app.all("*", (req, res) => {
   });
 });
 
-const PORT = process.env.SERVER_PORT;
+const PORT = process.env.SERVER_PORT || 8080;
 
 import ContenedorMensajesDao from "./src/persistence/DAOs/Mensajes.dao.js";
 const contenedorMensajesDao = new ContenedorMensajesDao();
