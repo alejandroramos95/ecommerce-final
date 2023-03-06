@@ -10,7 +10,7 @@ import {
   getUserInfo,
 } from "../controllers/userController.js";
 import passport from "../middlewares/Passport.js";
-import upload from "../middlewares/multer.js";
+import upload from "../middlewares/Multer.js";
 
 const router = Router();
 
