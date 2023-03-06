@@ -36,7 +36,6 @@ export function generateJWToken(req, res) {
     exp: Math.floor(Date.now() / 1000) + 30 * 30,
   };
   const token = jwt.sign(payload, JWTKEY);
-  console.log(token);
   res.cookie("userLoggedEmail", req.session.passport.user, { maxAge: 60000 });
   res.cookie("userLoggedToken", token, { maxAge: 60000 });
   res.redirect("/productos");

@@ -17,12 +17,12 @@ router.get(
   leerProductos
 );
 router.get(
-  "/productos/:categoria",
+  "/productos/categ/:categoria",
   passport.authenticate("jwt", { session: false }),
   listarPorCategoria
 );
 router.get(
-  "/productos/:id",
+  "/productos/id/:id",
   passport.authenticate("jwt", { session: false }),
   listarPorId
 );
