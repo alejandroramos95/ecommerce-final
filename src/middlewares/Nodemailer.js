@@ -43,6 +43,42 @@ export async function enviarEmailRegistro(newUser) {
 }
 
 export async function enviarEmailCompra(orden) {
+  let arrayOrden = [];
+  for (let i = 0; i < orden.productos.length; i++) {
+    const element = {
+      ID: orden.productos[i]._id.toHexString(),
+      Nombre: orden.productos[i].Nombre,
+      Precio: orden.productos[i].Precio,
+    };
+    arrayOrden.push(element);
+  }
+
+  const arrayOrdenConCantidad = [];
+
+  arrayOrden.map((item) => {
+    if (
+      arrayOrdenConCantidad.find((object) => {
+        if (object.ID === item.ID && object.Precio === item.Precio) {
+          object.Cantidad++;
+          return true;
+        } else {
+          return false;
+        }
+      })
+    ) {
+    } else {
+      item.Cantidad = 1;
+      arrayOrdenConCantidad.push(item);
+    }
+  });
+
+  const arrayOrdenPrecioTotal = [];
+  for (let i = 0; i < arrayOrdenConCantidad.length; i++) {
+    arrayOrdenPrecioTotal[i] = arrayOrdenConCantidad[i];
+    arrayOrdenPrecioTotal[i].PrecioTotal =
+      arrayOrdenConCantidad[i].Precio * arrayOrdenConCantidad[i].Cantidad;
+  }
+
   const transporter = createTransport({
     host: "smtp.ethereal.email",
     port: 587,

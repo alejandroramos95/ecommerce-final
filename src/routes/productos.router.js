@@ -7,6 +7,7 @@ import {
   borrarProducto,
   actualizarProducto,
 } from "../controllers/productosController.js";
+import { validarAdmin } from "../middlewares/webAuth.js";
 import passport from "../middlewares/Passport.js";
 
 const router = Router();
@@ -28,16 +29,19 @@ router.get(
 );
 router.post(
   "/productos",
+  validarAdmin,
   passport.authenticate("jwt", { session: false }),
   guardoProductoEnDB
 );
 router.put(
   "/productos/:id",
+  validarAdmin,
   passport.authenticate("jwt", { session: false }),
   actualizarProducto
 );
 router.delete(
   "/productos/:id",
+  validarAdmin,
   passport.authenticate("jwt", { session: false }),
   borrarProducto
 );
