@@ -48,11 +48,30 @@ app.all("*", (req, res) => {
   });
 });
 
-io.on("disconnect", () => {
-  console.log("Usuario desconectado mensajescontroller.");
-});
-
 const PORT = process.env.SERVER_PORT;
+
+import ContenedorMensajesDao from "./src/persistence/DAOs/Mensajes.dao.js";
+const contenedorMensajesDao = new ContenedorMensajesDao();
+import moment from "moment";
+
+io.on("connection", async (socket) => {
+  console.log(`Usuario ${socket.id} conectado`); // Identifico usuario logueado
+
+  socket.emit("messages", await contenedorMensajesDao.getAll()); // Emito los mensajes previamente cargados
+
+  socket.on("new-message", async (data) => {
+    data.type = "Usuario";
+    data.date = moment().format("DD-MM-YYYY HH:mm:ss");
+
+    await contenedorMensajesDao.save(data); // Guardo el nuevo mensaje generado con la fecha que se envio
+
+    io.sockets.emit("messages", await contenedorMensajesDao.getAll()); // Emito los mensajes globales
+  });
+
+  socket.on("disconnect", () => {
+    console.log(`Usuario ${socket.id} desconectado`); // Identifico usuario deslogueado
+  });
+});
 
 const server = httpServer.listen(PORT, () => {
   console.log(`Servidor http escuchando en el puerto ${server.address().port}`);

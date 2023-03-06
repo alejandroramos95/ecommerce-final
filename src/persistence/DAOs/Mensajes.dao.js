@@ -28,4 +28,13 @@ export default class ContenedorMensajesDao {
     const nuevoMensaje = new MensajesModel(mensaje);
     return await nuevoMensaje.save();
   }
+
+  async getByEmail(data) {
+    await this.conectarDB();
+    const mensajesByEmail = await MensajesModel.find(
+      { email: data },
+      { _id: false, __v: false }
+    );
+    return mensajesByEmail;
+  }
 }
