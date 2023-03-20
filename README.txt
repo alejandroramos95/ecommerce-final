@@ -1,6 +1,10 @@
 ## INSTALL DEPENDENCIES
 npm install
 
+## RENDER URL ACCSES
+
+## https://ecommerce-proyecto-final.onrender.com/ ##
+
 ## CREATE A .env FILE WITH THE FOLLOWINGS ENVIROMENT variables
 
 ## SERVER CONFIG
